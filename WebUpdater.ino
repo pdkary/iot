@@ -34,16 +34,6 @@ int value = 0;
 AdafruitIO_Feed *AssistiveCallButtons = io.feed("LoveLights", "pdkary");
 bool onBool = false;
 
-RGB colorConverter(int hexInt)
-{
-    String hexstring = String(hexInt,HEX);
-    long number = (long) strtol( &hexstring[0], NULL, 16);
-    int r = number >> 16;
-    int g = number >> 8 & 0xFF;
-    int b = number & 0xFF;
-    return RGB(r,g,b);
-}
-
 void updateLights(){
   if (digitalRead(GREEN)) {
     value += 400000;
@@ -59,7 +49,7 @@ void updateLights(){
   if (value > 16777215) {
     value = 16777215;
   }
-  RGB rgb = colorConverter(value);
+  RGB rgb = RGB.fromInt(value);
   rgb.logRGB();
   delay(100);
 }
@@ -67,7 +57,7 @@ void updateLights(){
 void handleMessage(AdafruitIO_Data *data) {
   onBool = !onBool;
   int value = data->toInt();
-  RGB rgb = colorConverter(value);
+  RGB rgb = RGB.fromInt(value);
   // delay in-between reads for stability
   delay(1);
 }
