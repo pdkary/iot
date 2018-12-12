@@ -18,6 +18,7 @@
 // or ethernet clients.
 /************************ Example Starts Here *******************************/
 #include "config.h"
+#include "RGB.h"
 
 #include <AdafruitIO.h>
 #include <ESP8266WiFi.h>
@@ -32,28 +33,6 @@ int value = 0;
 // set up the 'digital' feed
 AdafruitIO_Feed *AssistiveCallButtons = io.feed("LoveLights", "pdkary");
 bool onBool = false;
-
-class RGB
-{
-  public:
-    unsigned char R;
-    unsigned char G;
-    unsigned char B;
-
-    RGB(unsigned char r, unsigned char g, unsigned char b)
-    {
-      R = r;
-      G = g;
-      B = b;
-    }
-    bool Equals(RGB rgb)
-    {
-      return (R == rgb.R) && (G == rgb.G) && (B == rgb.B);
-    }
-    void logRGB() {
-      Serial.printf("R:%d\tG:%d\tB:%d\n", R, G, B);
-    }
-};
 
 RGB colorConverter(int hexInt)
 {
