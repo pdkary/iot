@@ -19,6 +19,7 @@
 /************************ Example Starts Here *******************************/
 #include "config.h"
 #include "RGB.h"
+#include "RGBFactory.h"
 
 #include <AdafruitIO.h>
 #include <ESP8266WiFi.h>
@@ -49,7 +50,7 @@ void updateLights(){
   if (value > 16777215) {
     value = 16777215;
   }
-  RGB rgb = RGB.fromInt(value);
+  RGB rgb = RGBFactory(value).build();
   rgb.logRGB();
   delay(100);
 }
@@ -57,7 +58,7 @@ void updateLights(){
 void handleMessage(AdafruitIO_Data *data) {
   onBool = !onBool;
   int value = data->toInt();
-  RGB rgb = RGB.fromInt(value);
+  RGB rgb = RGBFactory(value).build();
   // delay in-between reads for stability
   delay(1);
 }
