@@ -10,11 +10,6 @@ RGB::RGB(unsigned char r,unsigned char g,unsigned char b){
     G = g;
     B = b;
 }
-RGB::RGB(){
-    R = 0;
-    G = 0;
-    B = 0;
-}
 bool RGB::Equals(RGB rgb){
     bool r = rgb.R == R;
     bool g = rgb.G == G;

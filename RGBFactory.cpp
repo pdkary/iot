@@ -7,14 +7,16 @@
 
 RGBFactory::RGBFactory(String hexString){
     long number = (long) strtol( &hexString[0], NULL, 16);
-    int r = number >> 16;
-    int g = number >> 8 & 0xFF;
-    int b = number & 0xFF;
-    rgb = RGB(r,g,b);
+    R = number >> 16;
+    G = number >> 8 & 0xFF;
+    B = number & 0xFF;
+    rgb = RGB(R,G,B);
 }
 RGBFactory::RGBFactory(int hexInt){
     RGBFactory(String(hexInt,HEX));
 }
 RGB RGBFactory::build(){
-    return rgb;
+    return RGB(R,G,B);
 }
+
+#endif
