@@ -1,22 +1,3 @@
-// Remote Control with the Huzzah + Adafruit IO
-//
-// LED Board
-//
-// Adafruit invests time and resources providing this open source code.
-// Please support Adafruit and open source hardware by purchasing
-// products from Adafruit!
-//
-// Written by Richard Albritton, based on original code by Tony DiCola for Adafruit Industries
-// Licensed under the MIT license.
-//
-// All text above must be included in any redistribution.
-
-/************************** Configuration ***********************************/
-
-// edit the config.h tab and enter your Adafruit IO credentials
-// and any additional configuration needed for WiFi, cellular,
-// or ethernet clients.
-/************************ Example Starts Here *******************************/
 #include "config.h"
 #include "RGB.h"
 #include "RGBFactory.h"
@@ -24,57 +5,82 @@
 #include <AdafruitIO.h>
 #include <ESP8266WiFi.h>
 
-#define RED 2
-#define BLUE 4
-#define GREEN 5
+#define RED 13
+#define BLUE 12
+#define GREEN 14
+
+#define BUTTONPIN 4
 
 int value = 0;
 
 
 // set up the 'digital' feed
-AdafruitIO_Feed *AssistiveCallButtons = io.feed("LoveLights", "pdkary");
+AdafruitIO_Feed *LoveLights = io.feed("LoveLights", "pdkary");
 bool onBool = false;
 
+void setRGB(bool R, bool G, bool B){
+    digitalWrite(RED,R);
+    digitalWrite(RED,G);
+    digitalWrite(RED,B);
+}
+
 void updateLights(){
-  if (digitalRead(GREEN)) {
-    value += 400000;
-    AssistiveCallButtons->save(value);
-  };
-  if (digitalRead(BLUE)) {
-    value -= 400000;
-    AssistiveCallButtons->save(value);
+  if(digitalRead(BUTTONPIN)){
+    value+=1;
+    value = value % 8;
   }
-  if (value < 0) {
-    value = 0;
-  }
-  if (value > 16777215) {
-    value = 16777215;
-  }
-  RGB rgb = RGBFactory(value).build();
-  rgb.logRGB();
+  LoveLights->save(value);
   delay(100);
+}
+void setLights(int dataValue){
+  switch(dataValue) {
+    case 0:
+      setRGB(0,0,0);
+      break;
+    case 1:
+      setRGB(0,0,1);
+      break;
+    case 2:
+      setRGB(0,1,0);
+      break;
+    case 3:
+      setRGB(0,1,1);
+      break;
+    case 4:
+      setRGB(1,0,0);
+      break;
+    case 5:
+      setRGB(1,0,1);
+      break;
+    case 6:
+      setRGB(1,1,0);
+      break;
+    case 7:
+      setRGB(1,1,1);
+      break;
+  }
 }
 
 void handleMessage(AdafruitIO_Data *data) {
   onBool = !onBool;
   int value = data->toInt();
-  RGB rgb = RGBFactory(value).build();
-  // delay in-between reads for stability
-  delay(1);
+  setLights(value);
+  delay(10);
 }
 
 void setup() {
 
   pinMode(RED, OUTPUT);
-  pinMode(BLUE, INPUT);
-  pinMode(GREEN, INPUT);
+  pinMode(BLUE, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BUTTONPIN, INPUT);
 
   Serial.begin(115200);
   while (! Serial);
 
   Serial.print("Connecting to Adafruit IO");
   io.connect();
-  AssistiveCallButtons -> onMessage(handleMessage);
+  LoveLights -> onMessage(handleMessage);
 
   while (io.status() < AIO_CONNECTED) {
     Serial.print(".");
@@ -83,7 +89,7 @@ void setup() {
 
   Serial.println();
   Serial.println(io.statusText());
-  AssistiveCallButtons->get();
+  LoveLights->get();
 }
 void loop() {
     io.run();
