@@ -2,8 +2,8 @@
 #define IO_USERNAME "pdkary"
 #define IO_KEY "adabbdb7e3b54c6ea7d5762b14fa959a"
 
-#define WIFI_SSID "BELL374"
-#define WIFI_PASS "4F6CFD1CDEC3"
+#define WIFI_SSID "Target"
+#define WIFI_PASS "4039492718"
 
 #include <AdafruitIO.h>
 #include <AdafruitIO_Wifi.h>
