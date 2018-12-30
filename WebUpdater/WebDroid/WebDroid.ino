@@ -1,32 +1,36 @@
 #include "DroidConfig.h"
 #include <AdafruitIO.h>
+#include <Servo.h> 
 
-#define BOTTOMPIN 1
-#define TOPPIN 2
-#define ANALOG A0
+#define BOTTOMPIN 2
+#define TOPPIN 4
 
 #define DELAY_TIME 100
 
 AdafruitIO_Feed *TopServo = io.feed("TopServo", "pdkary");
 AdafruitIO_Feed *BottomServo = io.feed("BottomServo", "pdkary");
 
-void handleMessage(AdafruitIO_Data *data,bool isTop){
-  digitalWrite(TOPPIN,isTop);
-  digitalWrite(BOTTOMPIN,!isTop);
+Servo topServo;
+Servo bottomServo;
+
+void handleMessage(AdafruitIO_Data *data,Servo servo){
   int value = data->toInt();
-  analogWrite(ANALOG,value);
+  Serial.println(value);
+  servo.write(value);
   delay(DELAY_TIME);
 }
 void handleTop(AdafruitIO_Data *data){
-  handleMessage(data,true);
+  handleMessage(data,topServo);
 }
 void handleBottom(AdafruitIO_Data *data){
-  handleMessage(data,false);
+  handleMessage(data,bottomServo);
 }
 void setup() {
   pinMode(BOTTOMPIN,OUTPUT);
   pinMode(TOPPIN,OUTPUT);
-  pinMode(ANALOG,OUTPUT);  
+
+  topServo.attach(TOPPIN);
+  bottomServo.attach(BOTTOMPIN);
 
   Serial.begin(115200);
   while(!Serial);
